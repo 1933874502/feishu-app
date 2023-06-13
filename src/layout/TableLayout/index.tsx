@@ -7,7 +7,7 @@ import useSocket from "../../socket/hooks/useSocket"
 export default function TableLayout(props: PropsWithChildren) {
   const { i18n } = useTranslation()
 
-  const { submitNewVersion } = useSocket()
+  useSocket(true)
   useEffect(() => {
     const localLang = localStorage.getItem("lang")
     if (!localLang) return

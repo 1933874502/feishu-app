@@ -51,12 +51,17 @@ export default function useSheets() {
     },
     [sheets]
   )
-  const sheetUrlParams = useMemo(() => {
+  const sheetUrlParams = useMemo<{
+    roomId: string
+    sheetId: string
+    viewId: string
+  }>(() => {
     return {
-      sheetId: params.sheetId,
-      viewId: params.viewId,
+      roomId: params.roomId as string,
+      sheetId: params.sheetId as string,
+      viewId: params.viewId as string,
     }
-  }, [params.sheetId, params.viewId])
+  }, [params.sheetId, params.viewId, params.roomId])
   const createSheetDispatch = useCallback(
     (sheetName: string) => {
       dispatch(createSheet({ name: sheetName }))
@@ -74,7 +79,9 @@ export default function useSheets() {
     [getTargetSheetViewsArr, navigate]
   )
   const setCellValue = useCallback(
-    (sheetId: Key, viewId: Key, rowId: Key, colId?: Key) => {},
+    (sheetId: Key, viewId: Key, rowId: Key, colId: Key) => {
+      dispatch()
+    },
     []
   )
   return {

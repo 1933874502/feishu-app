@@ -1,29 +1,29 @@
-import { useEffect, useCallback } from "react"
+import { useEffect } from "react"
 import { socket } from "./socketInitor"
-export default function useSocket() {
-  const socketConnected = useCallback(() => {
-    console.log("socket连接成功")
-  }, [])
-  const socketDisconnect = useCallback(() => {
-    console.log("socket断开连接")
-  }, [])
-  const onMessageComming = useCallback((event: any) => {
-    console.log("有新版本过来了", event)
-  }, [])
-  const submitNewVersion = useCallback(() => {
-    socket.emit("message", JSON.stringify({ verison: 2, delete: "hello" }))
-  }, [])
-  useEffect(() => {
-    socket.on("connect", socketConnected)
-    socket.on("disconnect", socketDisconnect)
-    socket.on("message", onMessageComming)
-
-    return () => {
-      socket.off("connect", socketConnected)
-      socket.off("disconnect", socketDisconnect)
-      socket.off("message", onMessageComming)
+import { ValidMessage } from "../types"
+import JoinRoomMessageEmmiter from "../messageEmmiter/JoinRoomMessageEmmiter"
+import useUserInfo from "../../hooks/useUserInfo"
+import useSheets from "../../hooks/useSheets"
+export default function useSocket(shouldInit: boolean = false) {
+  const { user } = useUserInfo()
+  const {
+    sheetUrlParams: { roomId },
+  } = useSheets()
+  const startConnect = async () => {
+    try {
+      await socket.connect()
+      console.log("socket connect success")
+      JoinRoomMessageEmmiter(user.userId, roomId)
+    } catch (error) {
+      console.log("socket connect error")
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-  return { submitNewVersion }
+  }
+  const messageResolver = (messgae: ValidMessage) => {}
+  const watchSocketEvents = async () => {
+    socket.on("message", (message) => {})
+  }
+  useEffect(() => {
+    if (!shouldInit) return
+    startConnect()
+  }, [shouldInit])
 }

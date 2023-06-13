@@ -1,10 +1,14 @@
-var name = "window"
-var bar = {
-  name: "bar",
-  printName: function () {
-    console.log(name)
-  },
+class EventEmitter {
+  on(eventName, listener) {
+    if (!this[eventName]) {
+      this[eventName] = [listener]
+    } else {
+      this[eventName].push(listener)
+    }
+  }
+  emit(eventName, ...args) {
+    const matchEventListeners = this[eventName]
+    if (!matchEventListeners) return
+    matchEventListeners.foreach((listener) => listener(...args))
+  }
 }
-var _printName = bar.printName
-_printName() //window
-bar.printName() //window

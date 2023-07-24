@@ -5,7 +5,6 @@ import useThemeWorker from "../layout/TableLayout/components/Header/components/U
 
 export default function BeforeEach() {
   const { realTimeTheme } = useThemeWorker()
-
   return (
     <div>
       <Suspense>

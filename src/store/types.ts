@@ -1,17 +1,15 @@
-import { Key } from "react"
-
 export type ColumnMap = {
   TEXT: {}
   SELECT: {
-    options: Array<{ label: string; value: string; id: Key }>
+    options: Array<{ label: string; value: string; id: string }>
   }
 }
 export interface Row {
-  id: Key
-  [columnId: Key]: Key
+  id: string
+  [columnId: string]: string
 }
 export interface Column<T extends keyof ColumnMap> {
-  id: Key
+  id: string
   name: string
   columnType: T
   columnProps: ColumnMap[T]
@@ -21,22 +19,22 @@ export interface ColumnConfig {
   sort: number
 }
 export interface View {
-  id: Key
+  id: string
   name: string
   columnsConfig: {
-    [columnId: Key]: ColumnConfig
+    [columnId: string]: ColumnConfig
   }
 }
 export interface Sheet {
-  id: Key
+  id: string
   name: string
   columns: {
-    [columnId: Key]: Column<any>
+    [columnId: string]: Column<any>
   }
   views: {
-    [viewId: Key]: View
+    [viewId: string]: View
   }
   rows: {
-    [rowId: Key]: Row
+    [rowId: string]: Row
   }
 }

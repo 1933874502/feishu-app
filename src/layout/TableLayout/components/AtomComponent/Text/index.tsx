@@ -1,27 +1,22 @@
 import { Input } from "@mantine/core"
-import { Key, useCallback } from "react"
+import { useCallback } from "react"
 interface TextAtomComponentProps {
   defaultValue?: string
   width?: number
   destoryAtomComponent: VoidFunction
-  sheetId:Key
-  viewId:Key
-  colId:Key
-  rowId:Key
+  // sheetId: string
+  // viewId: string
+  // colId: string
+  // rowId: string
 }
 export default function TextAutoComponent({
   width = 200,
   defaultValue = "",
   destoryAtomComponent,
-  sheetId,
-  viewId,
-  rowId,
-  colId
 }: TextAtomComponentProps) {
-  const mutateTextColumn = useCallback(()=>{
-
+  const mutateTextColumn = useCallback(() => {
     destoryAtomComponent()
-  },[])
+  }, [])
   return (
     <Input
       onBlur={mutateTextColumn}

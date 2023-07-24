@@ -1,13 +1,17 @@
-import { Key } from "react"
+import {
+  AddSheetOperationPayload,
+  OriginOperationParams,
+} from "../socket/types"
 import { Column, ColumnConfig, Sheet, View } from "./types"
 import { v4 as uuid } from "uuid"
 
 export const viewTemplateCreator: (
   name: string,
-  columnsIdArr: Key[]
-) => View = (name, columnsIdArr = []) => {
+  columnsIdArr: string[],
+  viewId?: string
+) => View = (name, columnsIdArr = [], viewId) => {
   const columnsConfig: {
-    [columnId: Key]: ColumnConfig
+    [columnId: string]: ColumnConfig
   } = {}
   columnsIdArr.forEach((columnId) => {
     columnsConfig[columnId] = {
@@ -16,25 +20,36 @@ export const viewTemplateCreator: (
     }
   })
   return {
-    id: uuid(),
+    id: viewId || uuid(),
     name,
     columnsConfig,
   }
 }
-export const columnInitTemplateCreator: (name: string) => Column<"TEXT"> = (
-  name: string
-) => {
+export const columnInitTemplateCreator: (
+  name: string,
+  columnId?: string
+) => Column<"TEXT"> = (name, columnId) => {
   return {
-    id: uuid(),
+    id: columnId || uuid(),
     columnType: "TEXT",
     columnProps: {},
     name,
   }
 }
-export const sheetTemplateCreator: (name: string) => Sheet = (name: string) => {
-  const sheetId = uuid()
-  const defaultColumn = columnInitTemplateCreator("多行文本")
-  const defaultView = viewTemplateCreator("表格视图", [defaultColumn.id])
+export const sheetTemplateCreator: (
+  name: string,
+  message?: OriginOperationParams<AddSheetOperationPayload>
+) => Sheet = (name, message) => {
+  const sheetId = message?.path[1] || uuid()
+  const defaultColumn = columnInitTemplateCreator(
+    "多行文本",
+    message?.payload?.columnId
+  )
+  const defaultView = viewTemplateCreator(
+    "表格视图",
+    [defaultColumn.id],
+    message?.payload?.viewId
+  )
   return {
     id: sheetId,
     name,

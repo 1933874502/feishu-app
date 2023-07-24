@@ -1,12 +1,15 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
-import { Key } from "react"
+
 import { Sheet } from "../types"
 import { sheetTemplateCreator } from "../utils"
+import OperationMessageEmmiter from "../../socket/messageEmmiter/OperationMessageEmmiter"
+import { AddSheetOperationPayload } from "../../socket/types"
+import { pushRetentionOperations } from "../../socket/socketQueue"
 
 //const defaultSheet = sheetTemplateCreator("未命名子表")
 
 let initialSheets: {
-  [sheetId: Key]: Sheet
+  [sheetId: string]: Sheet
 } = {
   "17d55230-2d43-4519-84ca-461895e84d05": {
     id: "17d55230-2d43-4519-84ca-461895e84d05",
@@ -43,17 +46,44 @@ const sheetSlice = createSlice({
   name: "sheets",
   initialState: initialSheets,
   reducers: {
-    createSheet: (state, action: PayloadAction<{ name: string }>) => {
+    createSheet: (
+      state,
+      action: PayloadAction<{ name: string; roomId: string;roomVersion:number }>
+    ) => {
       const sheetCount = Object.values(state).length
       const sheet = sheetTemplateCreator(
         action.payload.name || `数据表 ${sheetCount + 1}`
       )
       state[sheet.id] = sheet
+      const views = sheet.views
+      const viewId = Object.keys(views)[0]
+      const columns = sheet.columns
+      const columnId = Object.keys(columns)[0]
+      pushRetentionOperations({
+        roomVersion:action.payload.roomVersion + 1,
+        executor:()=>OperationMessageEmmiter<AddSheetOperationPayload>(
+          ["sheet", sheet.id],
+          sheet.id,
+          null,
+          "AddSheet",
+          {
+            viewId: viewId,
+            columnId: columnId,
+            roomId: action.payload.roomId,
+            roomVersion:action.payload.roomVersion + 1,
+            sheetName: sheet.name,
+          }
+        )
+      })
+    },
+    applyCreateSheet: (state, action: PayloadAction<Sheet>) => {
+      state[action.payload.id] = action.payload
     },
     deleteSheet: () => {},
     renameSheet: () => {},
   },
 })
 
-export const { createSheet, deleteSheet, renameSheet } = sheetSlice.actions
+export const { createSheet, deleteSheet, renameSheet, applyCreateSheet } =
+  sheetSlice.actions
 export default sheetSlice.reducer

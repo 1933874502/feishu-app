@@ -6,7 +6,7 @@ import {
 import { RootState } from "../store/index"
 
 export default function useUserInfo() {
-  const user = useSelector((state: RootState) => state.user)
+  const user = useSelector((state: RootState) => state.users)
   const dispatch = useDispatch()
   const login = async () => {
     dispatch(loginAction())

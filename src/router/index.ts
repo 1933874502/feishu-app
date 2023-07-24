@@ -11,7 +11,7 @@ const routes = [
     element: React.createElement(BeforeEach),
     children: [
       {
-        path: "/base/:roomId/:sheetId/:viewId",
+        path: "base/:roomId/:sheetId/:viewId",
         element: React.createElement(Sheet),
       },
       {

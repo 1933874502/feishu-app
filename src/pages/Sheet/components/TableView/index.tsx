@@ -1,13 +1,6 @@
 import { Box, Input } from "@mantine/core"
 import useSheets from "../../../../hooks/useSheets"
-import {
-  Key,
-  useCallback,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react"
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { map, omit } from "lodash"
 import { IconPlus, IconSettings } from "@tabler/icons-react"
 import { Layer, Rect, Stage, Text as CanvasText } from "react-konva"
@@ -49,7 +42,7 @@ export default function TableView() {
     },
     []
   )
-  const views = getTargetSheetViewsArr(sheetId as Key)
+  const views = getTargetSheetViewsArr(sheetId as string)
   const navigationBarConfig = useMemo(() => {
     return [
       [
@@ -102,8 +95,8 @@ export default function TableView() {
     ]
   }, [])
   const { columnsConfigArr, columnsConfig, columns } = getTargetSheetViewColumn(
-    sheetId as Key,
-    viewId as Key
+    sheetId as string,
+    viewId as string
   )
   const columnHeaderWidth = useMemo<number>(() => {
     let width = 0
@@ -112,7 +105,7 @@ export default function TableView() {
     })
     return width
   }, [columnsConfigArr])
-  const { rowsArr } = getTargetViewRows(sheetId as Key, viewId as Key)
+  const { rowsArr } = getTargetViewRows(sheetId as string, viewId as string)
   useLayoutEffect(() => {
     setCanvasSize({
       width: canvasContainer.current!.offsetWidth,
